@@ -14,21 +14,25 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { PlusCircle } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { createGoalSchema, createGoalSchemaType } from "@/schemas/goal";
+import { zodResolver } from "@hookform/resolvers/zod";
+import CreateGoalBtn from "./new-goal-form-btn";
+import { createNewGoal } from "@/actions/goal";
+import { HTTP_STATUS } from "@/constants/http";
+import { toast } from "react-toastify";
 
 export function NewGoalForm() {
   const [open, setOpen] = useState(false);
-  const [goalName, setGoalName] = useState("");
-  const [numDays, setNumDays] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Here you would typically send this data to your backend
-    console.log("New goal:", { goalName, numDays: parseInt(numDays) });
-    // Reset form and close dialog
-    setGoalName("");
-    setNumDays("");
-    setOpen(false);
-  };
+  const {
+    register,
+    trigger,
+    getValues,
+    formState: { errors },
+  } = useForm<createGoalSchemaType>({
+    resolver: zodResolver(createGoalSchema),
+  });
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -44,37 +48,54 @@ export function NewGoalForm() {
             Set a new goal with a name and the number of days to achieve it.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
+        <form
+          action={async () => {
+            const results = await trigger();
+            if (!results) return;
+
+            const data = await createNewGoal(getValues());
+
+            if (data?.status === HTTP_STATUS.CREATED) {
+              setOpen(false);
+              toast.success("Goal created successfully", {
+                position: "top-right",
+                autoClose: 1500,
+                theme: "light",
+              });
+            }
+          }}
+        >
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="goalName" className="text-right">
+              <Label htmlFor="title" className="text-right">
                 Goal Name
               </Label>
-              <Input
-                id="goalName"
-                value={goalName}
-                onChange={(e) => setGoalName(e.target.value)}
-                className="col-span-3"
-                required
-              />
+              <Input id="title" className="col-span-3" {...register("title")} />
             </div>
+            {errors?.title && (
+              <small className="text-red-500 ps-24">
+                {errors?.title?.message}
+              </small>
+            )}
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="numDays" className="text-right">
+              <Label htmlFor="targetDays" className="text-right">
                 Target days
               </Label>
               <Input
-                id="numDays"
+                id="targetDays"
                 type="number"
-                value={numDays}
-                onChange={(e) => setNumDays(e.target.value)}
                 className="col-span-3"
-                required
-                min="1"
+                {...register("targetDays", { valueAsNumber: true })}
               />
             </div>
+            {errors?.targetDays && (
+              <small className="text-red-500 ps-24">
+                {errors?.targetDays?.message}
+              </small>
+            )}
           </div>
           <DialogFooter>
-            <Button type="submit">Create Goal</Button>
+            <CreateGoalBtn />
           </DialogFooter>
         </form>
       </DialogContent>

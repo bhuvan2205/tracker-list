@@ -9,12 +9,15 @@ import {
 } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 import { Goal } from "@/lib/type";
+import { getDaysLeftUntilTargetDay } from "@/lib/utils";
 
 type GoalCardProps = {
   goal: Goal;
 };
 
 function GoalCard({ goal }: GoalCardProps) {
+  const daysLeft = getDaysLeftUntilTargetDay(goal.createdAt, goal.targetDays);
+
   return (
     <Card>
       <CardHeader>
@@ -22,11 +25,11 @@ function GoalCard({ goal }: GoalCardProps) {
       </CardHeader>
       <CardContent>
         <p className="text-sm text-muted-foreground">
-          Created on: {goal.createdAt}
+          Created on: {goal.createdAt?.toLocaleDateString()}
         </p>
         <p className="text-sm font-medium mt-2">
-          {goal.daysLeft > 0
-            ? `${goal.daysLeft} days left`
+          {daysLeft > 0
+            ? `${daysLeft} days left`
             : "Goal deadline passed"}
         </p>
       </CardContent>

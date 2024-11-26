@@ -7,25 +7,17 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { NewGoalForm } from "./_components/new-goal-form";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import prisma from "@/config/db";
 
-// This would typically come from a database
-const goals = [
-  { id: 1, title: "Learn React", createdAt: "2023-11-01", daysLeft: 30 },
-  {
-    id: 2,
-    title: "Build a personal project",
-    createdAt: "2023-11-15",
-    daysLeft: 45,
-  },
-  {
-    id: 3,
-    title: "Exercise 3 times a week",
-    createdAt: "2023-11-20",
-    daysLeft: 60,
-  },
-];
+export default async function Dashboard() {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
 
-export default function Dashboard() {
+  const goals = await prisma.goal.findMany({
+    where: { userId: user.id },
+  });
+
   return (
     <>
       <div className="container mx-auto p-4">

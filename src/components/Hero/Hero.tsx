@@ -15,7 +15,7 @@ function Hero() {
           className="bg-white text-primary hover:bg-gray-100"
           variant={"default"}
         >
-          <Link href="/dashboard">Get Started</Link>
+          <Link href="/dashboard">View Dashboard</Link>
         </Button>
       </div>
     </section>
