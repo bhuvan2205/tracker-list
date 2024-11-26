@@ -5,12 +5,12 @@ import isLoggedIn from "@/lib/checkAuth";
 import { notFound } from "next/navigation";
 import { getDaysLeftUntilTargetDay } from "@/lib/utils";
 
-const GoalDetail = async ({ params }: { params: { id: string } }) => {
+const GoalDetail = async ({ params }: { params: { id: Promise<string> } }) => {
   await isLoggedIn();
-  const id = params?.id;
+  const { id: goalId } = await params;
 
   const goalData = await prisma.goal.findUnique({
-    where: { id: Number(id) },
+    where: { id: Number(goalId) },
   });
 
   if (!goalData) {
@@ -39,7 +39,7 @@ const GoalDetail = async ({ params }: { params: { id: string } }) => {
       </Card>
 
       <h2 className="text-2xl font-bold mb-4">Daily Progress</h2>
-      <UserGoals goalData={goalData} />
+      <UserGoals goalData={goalData} goalId={goalId} />
     </div>
   );
 };

@@ -12,12 +12,14 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { checkCurrentDay } from "@/lib/utils";
+import { updateDailyTask } from "@/actions/goal";
 
 type UserGoalsProps = {
   goalData: Goal;
+  goalId: Promise<string>;
 };
 
-const UserGoals = ({ goalData }: UserGoalsProps) => {
+const UserGoals = ({ goalData, goalId }: UserGoalsProps) => {
   const { targetDays = 1, createdAt } = goalData || {};
   const progress = useMemo(() => {
     const progress = [];
@@ -41,7 +43,7 @@ const UserGoals = ({ goalData }: UserGoalsProps) => {
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentItems = progress?.slice(startIndex, endIndex);
 
-  const handleSubmit = (
+  const handleSubmit = async (
     id: number,
     event: FormEvent<HTMLFormElement>,
     btnDisabled: boolean
@@ -50,16 +52,18 @@ const UserGoals = ({ goalData }: UserGoalsProps) => {
 
     const formData = new FormData(event.target as HTMLFormElement);
     const formDataObject = Object.fromEntries(formData.entries());
-    const currentProgress = {
+
+    const payload = {
       workout: formDataObject?.Workout === "on",
       diet: formDataObject?.Diet === "on",
       sleep: formDataObject?.Sleep === "on",
       meditation: formDataObject?.Meditation === "on",
       reading: formDataObject?.Reading === "on",
+      goalId: Number(goalId),
+      progressDay: id,
     };
 
-    console.log("🚀 ~ handleSubmit ~ currentProgress:", currentProgress);
-    console.log("🚀 ~ handleSubmit ~ id:", id);
+    await updateDailyTask(payload);
   };
 
   return (
@@ -87,8 +91,11 @@ const UserGoals = ({ goalData }: UserGoalsProps) => {
                           type="checkbox"
                           name={task?.name}
                           id={task?.name}
+                          className="cursor-pointer"
                         />
-                        <label htmlFor={task?.name}>{task?.name}</label>
+                        <label className="cursor-pointer" htmlFor={task?.name}>
+                          {task?.name}
+                        </label>
                       </div>
                     ))}
                   </div>

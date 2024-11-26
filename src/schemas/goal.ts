@@ -20,3 +20,19 @@ export const createGoalSchema = z.object({
 });
 
 export type createGoalSchemaType = z.infer<typeof createGoalSchema>;
+
+export const updateProgressSchema = z.object({
+  workout: z.boolean(),
+  diet: z.boolean(),
+  sleep: z.boolean(),
+  meditation: z.boolean(),
+  reading: z.boolean(),
+});
+
+export type updateProgressSchemaType = z.infer<typeof updateProgressSchema>;
+
+export const createProgressSchema = z.object({
+  goalId: z.number(),
+  progressDay: z.number(),
+  ...updateProgressSchema.shape,
+});

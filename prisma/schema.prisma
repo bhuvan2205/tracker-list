@@ -11,9 +11,24 @@ datasource db {
 }
 
 model Goal {
-  id         Int      @id @default(autoincrement())
+  id         Int        @id @default(autoincrement())
   title      String
   userId     String
   targetDays Int
-  createdAt  DateTime @default(now())
+  createdAt  DateTime   @default(now())
+  progress   Progress[]
+}
+
+model Progress {
+  id             Int      @id @default(autoincrement())
+  workout        Boolean
+  diet           Boolean
+  sleep          Boolean
+  meditation     Boolean
+  reading        Boolean
+  goalId         Int
+  goal           Goal     @relation(fields: [goalId], references: [id])
+  createdAt      DateTime @default(now())
+  isAllCompleted Boolean  @default(false)
+  progressDay    Int
 }
