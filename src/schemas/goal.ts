@@ -32,7 +32,7 @@ export const updateProgressSchema = z.object({
 export type Progress = z.infer<typeof updateProgressSchema>;
 
 export const createProgressSchema = z.object({
-  goalId: z.number(),
+  goalId: z.string(),
   progressDay: z.number(),
   ...updateProgressSchema.shape,
 });

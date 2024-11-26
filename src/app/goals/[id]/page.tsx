@@ -7,14 +7,15 @@ import { getDaysLeftUntilTargetDay } from "@/lib/utils";
 
 const GoalDetail = async ({ params }: { params: { id: Promise<string> } }) => {
   await isLoggedIn();
-  const { id: goalId } = await params;
+  const { id } = await params;
+  const goalId = id?.toString();
 
   const goalData = await prisma.goal.findUnique({
-    where: { id: Number(goalId) },
+    where: { id: goalId?.toString() },
   });
 
   const progress = await prisma.progress.findMany({
-    where: { goalId: Number(goalId) },
+    where: { goalId },
   });
   const progressSubmitted = progress.length;
 

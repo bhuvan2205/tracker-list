@@ -6,12 +6,12 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model Goal {
-  id         Int        @id @default(autoincrement())
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
   title      String
   userId     String
   targetDays Int
@@ -20,14 +20,14 @@ model Goal {
 }
 
 model Progress {
-  id             Int      @id @default(autoincrement())
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
   workout        Boolean
   diet           Boolean
   sleep          Boolean
   meditation     Boolean
   reading        Boolean
-  goalId         Int
   goal           Goal     @relation(fields: [goalId], references: [id])
+  goalId         String   @db.ObjectId
   createdAt      DateTime @default(now())
   isAllCompleted Boolean  @default(false)
   progressDay    Int

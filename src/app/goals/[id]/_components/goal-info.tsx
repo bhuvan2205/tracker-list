@@ -15,7 +15,7 @@ import ProgressInfoForm from "./goal-info-form";
 
 type UserGoalsProps = {
   goalData: Goal;
-  goalId: Promise<string>;
+  goalId: string;
 };
 
 const UserGoals = ({ goalData, goalId }: UserGoalsProps) => {
@@ -56,7 +56,7 @@ const UserGoals = ({ goalData, goalId }: UserGoalsProps) => {
       sleep: formDataObject?.Sleep === "on",
       meditation: formDataObject?.Meditation === "on",
       reading: formDataObject?.Reading === "on",
-      goalId: Number(goalId),
+      goalId: goalId?.toString(),
       progressDay: id,
     };
 
