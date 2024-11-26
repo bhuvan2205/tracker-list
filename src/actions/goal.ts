@@ -71,6 +71,8 @@ export const updateDailyTask = async (formData: unknown) => {
       data,
     });
 
+    revalidatePath(`${ROUTES.GOALS}/${validatedData?.data?.goalId}`);
+
     return {
       status: HTTP_STATUS.OK,
       message: "Status updated!",

@@ -13,6 +13,15 @@ const GoalDetail = async ({ params }: { params: { id: Promise<string> } }) => {
     where: { id: Number(goalId) },
   });
 
+  const progress = await prisma.progress.findMany({
+    where: { goalId: Number(goalId) },
+  });
+  const progressSubmitted = progress.length;
+
+  const fullyCompleted = progress.filter(
+    (progress) => !!progress?.isAllCompleted
+  ).length;
+
   if (!goalData) {
     return notFound();
   }
@@ -29,12 +38,32 @@ const GoalDetail = async ({ params }: { params: { id: Promise<string> } }) => {
           <CardTitle>{goalData.title}</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
-            Created on: {goalData.createdAt.toLocaleDateString()}
-          </p>
-          <p className="text-sm font-medium mt-2">
-            {daysLeft > 0 ? `${daysLeft} days left` : "Goal completed"}
-          </p>
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-sm text-muted-foreground">
+                Created on: {goalData.createdAt.toLocaleDateString()}
+              </p>
+              <p className="text-sm font-medium mt-2">
+                {daysLeft > 0 ? `${daysLeft} days left` : "Goal completed"}
+              </p>
+            </div>
+            {!!progressSubmitted && (
+              <div>
+                <p className="text-sm">
+                  <span className="text-muted-foreground">
+                    Toal no of days updated:{" "}
+                  </span>
+                  {progressSubmitted} {progressSubmitted > 1 ? "days" : "day"}
+                </p>
+                <p className="text-sm mt-2">
+                  <span className="text-muted-foreground">
+                    Fully Completed:{" "}
+                  </span>
+                  {fullyCompleted} {fullyCompleted > 1 ? "days" : "day"}
+                </p>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
 

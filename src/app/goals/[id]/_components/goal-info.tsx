@@ -2,7 +2,7 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import { Pagination } from "./pagination";
-import { ITEMS_PER_PAGE, TASKS } from "@/constants/goal";
+import { ITEMS_PER_PAGE } from "@/constants/goal";
 import { Goal } from "@prisma/client";
 import {
   Accordion,
@@ -10,9 +10,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { checkCurrentDay } from "@/lib/utils";
 import { updateDailyTask } from "@/actions/goal";
+import ProgressInfoForm from "./goal-info-form";
 
 type UserGoalsProps = {
   goalData: Goal;
@@ -22,19 +21,17 @@ type UserGoalsProps = {
 const UserGoals = ({ goalData, goalId }: UserGoalsProps) => {
   const { targetDays = 1, createdAt } = goalData || {};
   const progress = useMemo(() => {
-    const progress = [];
-    for (let i = 1; i <= targetDays; i++) {
-      progress.push({
-        id: i,
+    return [...Array(targetDays)].map((_, index) => {
+      return {
+        id: index + 1,
         completed: false,
         workout: false,
         diet: false,
         sleep: false,
         meditation: false,
         reading: false,
-      });
-    }
-    return progress;
+      };
+    });
   }, [targetDays]);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -73,43 +70,11 @@ const UserGoals = ({ goalData, goalId }: UserGoalsProps) => {
           <AccordionItem value={`item-${index}`} key={index}>
             <AccordionTrigger>Day {item?.id}</AccordionTrigger>
             <AccordionContent>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleSubmit(
-                    item?.id,
-                    e,
-                    !checkCurrentDay(createdAt, item.id)
-                  );
-                }}
-              >
-                <div className="flex gap-2 w-full">
-                  <div className="flex flex-col gap-2">
-                    {TASKS.map((task, index) => (
-                      <div key={index} className="flex gap-2">
-                        <input
-                          type="checkbox"
-                          name={task?.name}
-                          id={task?.name}
-                          className="cursor-pointer"
-                        />
-                        <label className="cursor-pointer" htmlFor={task?.name}>
-                          {task?.name}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="my-4">
-                  <Button
-                    type="submit"
-                    className="w-fit px-6"
-                    disabled={!checkCurrentDay(createdAt, item.id)}
-                  >
-                    Save
-                  </Button>
-                </div>
-              </form>
+              <ProgressInfoForm
+                handleSubmit={handleSubmit}
+                progress={item}
+                createdAt={createdAt}
+              />
             </AccordionContent>
           </AccordionItem>
         ))}
