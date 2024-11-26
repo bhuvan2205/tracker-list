@@ -15,7 +15,7 @@ export default async function Dashboard() {
   const user = await getUser();
 
   const goals = await prisma.goal.findMany({
-    where: { userId: user.id },
+    where: { userId: user?.id },
   });
 
   return (
