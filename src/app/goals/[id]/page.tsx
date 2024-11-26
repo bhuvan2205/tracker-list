@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import UserGoals from "./_components/goal-info";
+import UserGoals from "./_components/goal-info";
 import prisma from "@/config/db";
 import isLoggedIn from "@/lib/checkAuth";
 import { notFound } from "next/navigation";
@@ -39,7 +39,7 @@ const GoalDetail = async ({ params }: { params: { id: string } }) => {
       </Card>
 
       <h2 className="text-2xl font-bold mb-4">Daily Progress</h2>
-      {/* <UserGoals goalData={goalData} /> */}
+      <UserGoals goalData={goalData} />
     </div>
   );
 };

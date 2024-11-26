@@ -15,5 +15,5 @@ model Goal {
   title      String
   userId     String
   targetDays Int
-  createdAt  DateTime
+  createdAt  DateTime @default(now())
 }

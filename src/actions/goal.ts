@@ -2,10 +2,12 @@
 
 import prisma from "@/config/db";
 import { HTTP_STATUS } from "@/constants/http";
+import { ROUTES } from "@/constants/routes";
 import isLoggedIn from "@/lib/checkAuth";
 import { handleErrors } from "@/lib/error";
 import { createGoalSchema } from "@/schemas/goal";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { revalidatePath } from "next/cache";
 
 export const createNewGoal = async (formData: unknown) => {
   const validatedData = createGoalSchema.safeParse(formData);
@@ -26,6 +28,8 @@ export const createNewGoal = async (formData: unknown) => {
         createdAt: new Date(),
       },
     });
+
+    revalidatePath(ROUTES.DASHBOARD);
 
     return {
       status: HTTP_STATUS.CREATED,

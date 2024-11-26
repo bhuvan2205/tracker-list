@@ -8,8 +8,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
-import { Goal } from "@/lib/type";
 import { getDaysLeftUntilTargetDay } from "@/lib/utils";
+import { Goal } from "@prisma/client";
 
 type GoalCardProps = {
   goal: Goal;
