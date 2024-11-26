@@ -5,7 +5,9 @@ import isLoggedIn from "@/lib/checkAuth";
 import { notFound } from "next/navigation";
 import { getDaysLeftUntilTargetDay } from "@/lib/utils";
 
-const GoalDetail = async ({ params }: { params: { id: Promise<string> } }) => {
+type tParams = Promise<{ id: string[] }>;
+
+const GoalDetail = async ({ params }: { params: tParams }) => {
   await isLoggedIn();
   const { id } = await params;
   const goalId = id?.toString();
